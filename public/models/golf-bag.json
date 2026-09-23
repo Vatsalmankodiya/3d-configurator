@@ -1,0 +1,696 @@
+{
+  "metadata": {
+    "version": 4.6,
+    "type": "Object",
+    "generator": "Object3D.toJSON"
+  },
+  "geometries": [
+    {
+      "uuid": "78a0b3af-bf6b-4a36-b4a3-be23e0bee165",
+      "type": "CylinderGeometry",
+      "radiusTop": 0.32,
+      "radiusBottom": 0.28,
+      "height": 1.4,
+      "radialSegments": 32,
+      "heightSegments": 1,
+      "openEnded": false,
+      "thetaStart": 0,
+      "thetaLength": 6.283185307179586
+    },
+    {
+      "uuid": "e1bdbbef-7fba-4d2b-9926-d389b22675fb",
+      "type": "CylinderGeometry",
+      "radiusTop": 0.35,
+      "radiusBottom": 0.33,
+      "height": 0.18,
+      "radialSegments": 32,
+      "heightSegments": 1,
+      "openEnded": false,
+      "thetaStart": 0,
+      "thetaLength": 6.283185307179586
+    },
+    {
+      "uuid": "9deeefc1-2ea3-4d85-8982-352098435569",
+      "type": "CylinderGeometry",
+      "radiusTop": 0.29,
+      "radiusBottom": 0.31,
+      "height": 0.15,
+      "radialSegments": 32,
+      "heightSegments": 1,
+      "openEnded": false,
+      "thetaStart": 0,
+      "thetaLength": 6.283185307179586
+    },
+    {
+      "uuid": "fc113690-e078-4ae1-b17d-62c82b19e3bc",
+      "type": "BoxGeometry",
+      "width": 0.36,
+      "height": 0.55,
+      "depth": 0.22,
+      "widthSegments": 1,
+      "heightSegments": 1,
+      "depthSegments": 1
+    },
+    {
+      "uuid": "54098a06-41eb-4085-8071-756393b601ac",
+      "type": "BoxGeometry",
+      "width": 0.18,
+      "height": 0.9,
+      "depth": 0.38,
+      "widthSegments": 1,
+      "heightSegments": 1,
+      "depthSegments": 1
+    },
+    {
+      "uuid": "6c719684-4aa2-4cda-ab66-cc2b9a673e3c",
+      "type": "BoxGeometry",
+      "width": 0.18,
+      "height": 0.9,
+      "depth": 0.38,
+      "widthSegments": 1,
+      "heightSegments": 1,
+      "depthSegments": 1
+    },
+    {
+      "uuid": "1d3847db-e94b-4980-b901-4e87bef08358",
+      "type": "TorusGeometry",
+      "radius": 0.42,
+      "tube": 0.045,
+      "radialSegments": 16,
+      "tubularSegments": 32,
+      "arc": 2.827433388230814
+    },
+    {
+      "uuid": "44cfa505-3a38-4b31-91fe-0d3cca221c68",
+      "type": "TorusGeometry",
+      "radius": 0.1,
+      "tube": 0.03,
+      "radialSegments": 16,
+      "tubularSegments": 24,
+      "arc": 3.141592653589793
+    },
+    {
+      "uuid": "ecc7fe05-2747-4202-a8f9-629343cc3eb3",
+      "type": "BoxGeometry",
+      "width": 0.38,
+      "height": 0.03,
+      "depth": 0.24,
+      "widthSegments": 1,
+      "heightSegments": 1,
+      "depthSegments": 1
+    },
+    {
+      "uuid": "ef55a537-617d-4d6b-ac4a-3b6af746277a",
+      "type": "TorusGeometry",
+      "radius": 0.05,
+      "tube": 0.012,
+      "radialSegments": 16,
+      "tubularSegments": 24,
+      "arc": 6.283185307179586
+    },
+    {
+      "uuid": "709214c6-0ceb-434d-97f3-3247bd97f8d4",
+      "type": "CylinderGeometry",
+      "radiusTop": 0.08,
+      "radiusBottom": 0.08,
+      "height": 0.015,
+      "radialSegments": 32,
+      "heightSegments": 1,
+      "openEnded": false,
+      "thetaStart": 0,
+      "thetaLength": 6.283185307179586
+    }
+  ],
+  "materials": [
+    {
+      "uuid": "73791dfc-0fca-4c9e-910a-bb2af703404f",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Fabric_Main",
+      "color": 1120295,
+      "roughness": 0.45,
+      "metalness": 0.05,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "c824c116-50cf-4145-9881-21bf15d067f1",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_TopCuff",
+      "color": 2042167,
+      "roughness": 0.3,
+      "metalness": 0.2,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "9e6e2d06-1762-4764-9957-caef1dc8a485",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Rubber_Base",
+      "color": 988970,
+      "roughness": 0.7,
+      "metalness": 0.1,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "6a94eb41-49b6-48d8-b342-7c80bdade386",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Fabric_FrontPocket",
+      "color": 12131356,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "016a89cf-6f0d-4cdb-91df-a3bc12e6066e",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Fabric_LeftPocket",
+      "color": 1120295,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "c4a6ce75-5128-4361-8efa-425385dd53f1",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Fabric_RightPocket",
+      "color": 1120295,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "9f3b2c10-e8e8-483c-af7c-c6144a53638d",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Padded_Strap",
+      "color": 1976635,
+      "roughness": 0.65,
+      "metalness": 0.05,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "a9f13881-7668-4ad2-8723-64b74422b747",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Rubber_Handle",
+      "color": 132631,
+      "roughness": 0.4,
+      "metalness": 0.1,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "f16753d9-84e7-44a8-a178-26418e9e9bae",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Zipper",
+      "color": 3359061,
+      "roughness": 0.3,
+      "metalness": 0.8,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "427f1c5a-d778-44a9-9a73-711e816223f6",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Metal_Hardware",
+      "color": 9741240,
+      "roughness": 0.15,
+      "metalness": 0.9,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    },
+    {
+      "uuid": "2287ba02-14e4-45dc-91c0-3fd79e3365c4",
+      "type": "MeshStandardMaterial",
+      "name": "MAT_Metallic_Logo",
+      "color": 14251782,
+      "roughness": 0.2,
+      "metalness": 0.95,
+      "emissive": 0,
+      "envMapRotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "envMapIntensity": 1,
+      "side": 2,
+      "blendColor": 0
+    }
+  ],
+  "object": {
+    "uuid": "7b9b2697-a498-434d-9dbc-68d5bc334146",
+    "type": "Group",
+    "name": "GolfBag",
+    "layers": 1,
+    "matrix": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "children": [
+      {
+        "uuid": "36c8b77e-e809-4ac5-8376-3c9ab6a5c684",
+        "type": "Mesh",
+        "name": "bag_main_body",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "78a0b3af-bf6b-4a36-b4a3-be23e0bee165",
+        "material": "73791dfc-0fca-4c9e-910a-bb2af703404f"
+      },
+      {
+        "uuid": "c958aa2a-512f-4573-884a-245dfa339dd3",
+        "type": "Mesh",
+        "name": "bag_top",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "e1bdbbef-7fba-4d2b-9926-d389b22675fb",
+        "material": "c824c116-50cf-4145-9881-21bf15d067f1"
+      },
+      {
+        "uuid": "0a65e9ef-c781-4d89-92c4-2e6fce01a901",
+        "type": "Mesh",
+        "name": "bag_bottom",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "9deeefc1-2ea3-4d85-8982-352098435569",
+        "material": "9e6e2d06-1762-4764-9957-caef1dc8a485"
+      },
+      {
+        "uuid": "4ab8d923-8209-4264-8a86-5962aa9997d3",
+        "type": "Mesh",
+        "name": "bag_front_pocket",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "fc113690-e078-4ae1-b17d-62c82b19e3bc",
+        "material": "6a94eb41-49b6-48d8-b342-7c80bdade386"
+      },
+      {
+        "uuid": "dafb933f-7ce5-4def-b2cb-a549ba25b07b",
+        "type": "Mesh",
+        "name": "bag_left_pocket",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "54098a06-41eb-4085-8071-756393b601ac",
+        "material": "016a89cf-6f0d-4cdb-91df-a3bc12e6066e"
+      },
+      {
+        "uuid": "efea4bda-3626-4f30-9faf-ef7ac90552af",
+        "type": "Mesh",
+        "name": "bag_right_pocket",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "6c719684-4aa2-4cda-ab66-cc2b9a673e3c",
+        "material": "c4a6ce75-5128-4361-8efa-425385dd53f1"
+      },
+      {
+        "uuid": "d5517373-9954-47b3-9cca-958e294c6d29",
+        "type": "Mesh",
+        "name": "bag_strap",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "1d3847db-e94b-4980-b901-4e87bef08358",
+        "material": "9f3b2c10-e8e8-483c-af7c-c6144a53638d"
+      },
+      {
+        "uuid": "35a8c4eb-f39f-4356-b38b-bd674ab36694",
+        "type": "Mesh",
+        "name": "bag_handle",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "44cfa505-3a38-4b31-91fe-0d3cca221c68",
+        "material": "a9f13881-7668-4ad2-8723-64b74422b747"
+      },
+      {
+        "uuid": "0891c36b-b966-4f98-bdbf-432dafae41ed",
+        "type": "Mesh",
+        "name": "bag_zipper",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "ecc7fe05-2747-4202-a8f9-629343cc3eb3",
+        "material": "f16753d9-84e7-44a8-a178-26418e9e9bae"
+      },
+      {
+        "uuid": "f7a5a813-953e-44ae-9b3c-04f3a1267c0d",
+        "type": "Mesh",
+        "name": "bag_metal_parts",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "ef55a537-617d-4d6b-ac4a-3b6af746277a",
+        "material": "427f1c5a-d778-44a9-9a73-711e816223f6"
+      },
+      {
+        "uuid": "6946b027-91a7-422b-9604-b6276142443c",
+        "type": "Mesh",
+        "name": "bag_logo",
+        "layers": 1,
+        "matrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "geometry": "709214c6-0ceb-434d-97f3-3247bd97f8d4",
+        "material": "2287ba02-14e4-45dc-91c0-3fd79e3365c4"
+      }
+    ]
+  }
+}
