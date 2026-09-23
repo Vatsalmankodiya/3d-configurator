@@ -94,11 +94,94 @@ const ModelScene: React.FC<SceneProps> = ({
     const discovered: ModelPart[] = [];
     const nameCount = new Map<string, number>();
 
+    // --- Helpers for producing clean, human-readable part names ---
+
+    /** Patterns that indicate an auto-generated / meaningless name */
+    const GENERIC_PATTERNS = [
+      /^mesh[_\s]?\d*$/i,
+      /^object[_\s]?\d*$/i,
+      /^primitive[_\s]?\d*$/i,
+      /^geometry[_\s]?\d*$/i,
+      /^node[_\s]?\d*$/i,
+      /^group[_\s]?\d*$/i,
+      /^default[_\s]?\d*$/i,
+      /^unnamed[_\s]?\d*$/i,
+      /^untitled[_\s]?\d*$/i,
+      /^cube[_\s]?\d*$/i,
+      /^sphere[_\s]?\d*$/i,
+      /^cylinder[_\s]?\d*$/i,
+      /^plane[_\s]?\d*$/i,
+      /^\d+$/,           // purely numeric e.g. "003"
+      /^[_\-\s]+$/,     // only separators
+      // ID-like: 1–3 letters followed by 5+ digits  e.g. "Dg100297010"
+      /^[A-Za-z]{0,3}\d{5,}$/,
+      // Hex-like hash strings e.g. "a3f9b2d1"
+      /^[0-9a-f]{7,}$/i,
+    ];
+
+    /**
+     * Returns true if the name looks auto-generated or meaningless.
+     * Also catches names where more than 55% of characters are digits.
+     */
+    const isGeneric = (name: string): boolean => {
+      const n = (name ?? '').trim();
+      if (!n || n.length < 2) return true;
+      if (GENERIC_PATTERNS.some((r) => r.test(n))) return true;
+      // Digit-heavy strings (e.g. "Bd10029701") — more than 55% digits
+      const digitCount = (n.match(/\d/g) ?? []).length;
+      if (digitCount / n.length > 0.55) return true;
+      return false;
+    };
+
+    /** Convert snake_case, camelCase, PascalCase, kebab-case → Title Case */
+    const toReadable = (raw: string): string => {
+      const cleaned = raw
+        .replace(/([a-z])([A-Z])/g, '$1 $2')        // camelCase
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')  // ACRONYMWord
+        .replace(/[_\-]+/g, ' ')                     // snake / kebab
+        .replace(/\s+/g, ' ')
+        .trim();
+      return cleaned
+        .split(' ')
+        .filter(Boolean)
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ');
+    };
+
+
+    /**
+     * Walk UP the scene hierarchy from a mesh to find the first
+     * ancestor that has a meaningful (non-generic) name.
+     */
+    const resolveName = (node: THREE.Object3D): string => {
+      // 1. Try the node's own name
+      if (!isGeneric(node.name)) return toReadable(node.name);
+
+      // 2. Try material name(s)
+      const mesh = node as THREE.Mesh;
+      if (mesh.isMesh && mesh.material) {
+        const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        for (const mat of mats) {
+          if (mat.name && !isGeneric(mat.name)) return toReadable(mat.name);
+        }
+      }
+
+      // 3. Walk up parents
+      let parent = node.parent;
+      while (parent) {
+        if (!isGeneric(parent.name)) return toReadable(parent.name);
+        parent = parent.parent;
+      }
+
+      // 4. Fallback — will be suffixed with a counter
+      return 'Part';
+    };
+
     normalizedScene.traverse((child) => {
       const mesh = child as THREE.Mesh;
       if (!mesh.isMesh) return;
 
-      const baseName = (mesh.name?.trim()) || 'Part';
+      const baseName = resolveName(mesh);
       const count = (nameCount.get(baseName) ?? 0) + 1;
       nameCount.set(baseName, count);
       const partId = count > 1 ? `${baseName}_${count}` : baseName;
@@ -415,83 +498,92 @@ export const ProductModelViewer: React.FC<ProductModelViewerProps> = ({ modelUrl
       {/* ── Controls bar ──────────────────────────────────────────────────────── */}
       {!loadError && (
         <div className="border-t border-slate-200 bg-white shrink-0">
-          <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-slate-100">
 
-            {/* Part list */}
-            <div className="md:w-52 shrink-0 p-3">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                Parts {parts.length > 0 && `(${parts.length})`}
-              </p>
+          {/* Parts row — full width, horizontal scroll */}
+          <div className="px-4 pt-3 pb-2">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+              Model Parts {parts.length > 0 && <span className="text-slate-300">({parts.length})</span>}
+            </p>
 
-              {isLoading ? (
-                <div className="space-y-1.5">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-7 bg-slate-100 rounded-lg animate-pulse" />
-                  ))}
-                </div>
-              ) : parts.length === 0 ? (
-                <p className="text-xs text-slate-400 italic">No parts detected</p>
-              ) : (
-                <div className="flex flex-col gap-0.5 max-h-36 overflow-y-auto scrollbar-none">
-                  {parts.map((part) => (
-                    <button
-                      key={part.id}
-                      onClick={() => setSelectedPartId(part.id)}
-                      className={`text-left px-3 py-1.5 rounded-lg text-xs font-semibold transition-all truncate ${
-                        selectedPartId === part.id
-                          ? 'bg-red-600 text-white shadow-sm'
-                          : 'text-slate-700 hover:bg-slate-100'
-                      }`}
-                      title={part.name}
-                    >
-                      {part.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            {isLoading ? (
+              <div className="flex gap-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-8 w-24 bg-slate-100 rounded-full animate-pulse shrink-0" />
+                ))}
+              </div>
+            ) : parts.length === 0 ? (
+              <p className="text-xs text-slate-400 italic py-1">No parts detected in this model</p>
+            ) : (
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                {parts.map((part) => (
+                  <button
+                    key={part.id}
+                    onClick={() => setSelectedPartId(part.id)}
+                    className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap border ${
+                      selectedPartId === part.id
+                        ? 'bg-red-600 text-white border-red-600 shadow-sm shadow-red-200'
+                        : 'text-slate-700 bg-white border-slate-200 hover:border-red-300 hover:text-red-600'
+                    }`}
+                    title={part.name}
+                  >
+                    {part.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-            {/* Colour picker */}
-            <div className="flex-1 p-3 flex flex-col gap-2">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                {selectedPart ? `Colour — ${selectedPart.name}` : 'Select a Part'}
-              </p>
-
+          {/* Colour picker — always fully visible below parts */}
+          <div className="px-4 pb-3 border-t border-slate-100 mt-1 pt-3">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
               {selectedPart ? (
-                <div className="flex flex-wrap items-center gap-3">
+                <>Colour — <span className="text-slate-600 normal-case font-bold">{selectedPart.name}</span></>
+              ) : (
+                'Select a Part Above to Change its Colour'
+              )}
+            </p>
+
+            {selectedPart ? (
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Native colour picker */}
+                <div className="relative shrink-0">
                   <input
                     type="color"
                     value={currentColor.startsWith('#') ? currentColor : '#888888'}
                     onChange={(e) => handleColorChange(e.target.value)}
-                    className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer p-0.5 bg-white shrink-0"
+                    className="w-10 h-10 rounded-xl border-2 border-slate-200 cursor-pointer p-0.5 bg-white"
                     title="Custom colour"
                   />
+                  <span className="absolute -bottom-4 left-0 text-[9px] text-slate-400 font-mono whitespace-nowrap">Custom</span>
+                </div>
 
-                  <div className="flex flex-wrap gap-1.5">
-                    {PRESETS.map((color) => (
+                {/* Preset swatches */}
+                <div className="flex flex-wrap gap-2">
+                  {PRESETS.map((color) => {
+                    const isActive = currentColor === color;
+                    return (
                       <button
                         key={color}
                         onClick={() => handleColorChange(color)}
-                        className="w-6 h-6 rounded-full border-[2px] transition-transform hover:scale-110 shadow-sm"
+                        className="w-7 h-7 rounded-full transition-all hover:scale-110"
                         style={{
                           backgroundColor: color,
-                          borderColor: currentColor === color ? '#e11d48' : 'rgba(0,0,0,0.12)',
-                          outline: currentColor === color ? '2px solid #fca5a5' : 'none',
-                          outlineOffset: '1px',
+                          border: isActive ? '2.5px solid #e11d48' : '2px solid rgba(0,0,0,0.1)',
+                          boxShadow: isActive ? '0 0 0 2px #fca5a5' : '0 1px 2px rgba(0,0,0,0.15)',
                         }}
                         title={color}
                       />
-                    ))}
-                  </div>
-
-                  <span className="text-xs font-mono text-slate-400">{currentColor}</span>
+                    );
+                  })}
                 </div>
-              ) : (
-                <p className="text-xs text-slate-400 italic">
-                  Click a part on the left to change its colour
-                </p>
-              )}
-            </div>
+
+                <span className="text-xs font-mono text-slate-400 mt-1">{currentColor}</span>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400 italic">
+                Click any part pill above to select it, then choose a colour here.
+              </p>
+            )}
           </div>
 
           {/* Bottom buttons */}
