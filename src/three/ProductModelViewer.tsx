@@ -36,7 +36,7 @@ interface SceneProps {
   selectedPartId: string | null;
   partColors: Record<string, string>;
   meshMapRef: React.MutableRefObject<Map<string, THREE.Mesh>>;
-  originalColorsRef: React.MutableRefObject<Map<string, THREE.Color>>;
+  originalMatsRef: React.MutableRefObject<Map<string, THREE.Material[]>>;
   resetTrigger: number;
 }
 
@@ -47,7 +47,7 @@ const ModelScene: React.FC<SceneProps> = ({
   selectedPartId,
   partColors,
   meshMapRef,
-  originalColorsRef,
+  originalMatsRef,
   resetTrigger,
 }) => {
   const gltf = useGLTF(modelUrl);
@@ -89,7 +89,7 @@ const ModelScene: React.FC<SceneProps> = ({
     didDiscover.current = true;
 
     meshMapRef.current.clear();
-    originalColorsRef.current.clear();
+    originalMatsRef.current.clear();
 
     const discovered: ModelPart[] = [];
     const nameCount = new Map<string, number>();
@@ -188,62 +188,70 @@ const ModelScene: React.FC<SceneProps> = ({
 
       meshMapRef.current.set(partId, mesh);
 
-      // Record original colour (works for any colour-bearing material)
+      // Snapshot original materials (cloned already above — keep a reference per slot)
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-      let origColor: THREE.Color | null = null;
-      for (const mat of mats) {
-        const c = (mat as any).color;
-        if (c instanceof THREE.Color) { origColor = c.clone(); break; }
-      }
-      originalColorsRef.current.set(partId, origColor ?? new THREE.Color(0x888888));
+      originalMatsRef.current.set(partId, mats as THREE.Material[]);
 
       discovered.push({ id: partId, name: baseName });
     });
 
     onPartsReady(discovered);
     onLoaded();
-  }, [normalizedScene, meshMapRef, originalColorsRef, onPartsReady, onLoaded]);
+  }, [normalizedScene, meshMapRef, originalMatsRef, onPartsReady, onLoaded]);
 
   // Apply per-part colour changes whenever selection or colours change
   useEffect(() => {
     meshMapRef.current.forEach((mesh, partId) => {
       const isSelected = selectedPartId === partId;
       const customColor = partColors[partId];
-      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      const origMats = originalMatsRef.current.get(partId);
 
-      mats.forEach((mat) => {
-        const m = mat as any;
-        if (!(m.color instanceof THREE.Color)) return;
-
-        // Colour
-        if (customColor) {
-          m.color.setStyle(customColor);
-        } else {
-          const orig = originalColorsRef.current.get(partId);
-          if (orig) m.color.copy(orig);
+      if (customColor) {
+        // Build a clean flat material per original slot — no textures, no vertex
+        // colors, no emissive bake. Just the pure chosen color.
+        const newMats = (origMats ?? []).map((origMat) => {
+          const flat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color().setStyle(customColor),
+            roughness: (origMat as any).roughness ?? 0.6,
+            metalness: (origMat as any).metalness ?? 0.1,
+            side: origMat.side,
+            transparent: origMat.transparent,
+            opacity: origMat.opacity,
+            // Emissive highlight for selection
+            emissive: new THREE.Color(isSelected ? 0x2d3748 : 0x000000),
+            emissiveIntensity: isSelected ? 0.18 : 0,
+          });
+          return flat;
+        });
+        mesh.material = newMats.length === 1 ? newMats[0] : newMats;
+      } else {
+        // Restore original materials exactly
+        if (origMats) {
+          mesh.material = origMats.length === 1 ? origMats[0] : origMats;
+          // Clear any lingering selection highlight on the restored mats
+          origMats.forEach((mat) => {
+            const m = mat as any;
+            if (m.emissive instanceof THREE.Color) {
+              m.emissive.set(isSelected ? 0x2d3748 : 0x000000);
+              m.emissiveIntensity = isSelected ? 0.18 : 0;
+            }
+            m.needsUpdate = true;
+          });
         }
-
-        // Selection highlight (emissive, only if supported)
-        if (m.emissive instanceof THREE.Color) {
-          m.emissive.set(isSelected ? 0x2d3748 : 0x000000);
-          m.emissiveIntensity = isSelected ? 0.18 : 0;
-        }
-
-        m.needsUpdate = true;
-      });
+      }
     });
-  }, [selectedPartId, partColors, meshMapRef, originalColorsRef]);
+  }, [selectedPartId, partColors, meshMapRef, originalMatsRef]);
 
   // Reset colours to original
   useEffect(() => {
     if (resetTrigger === 0) return;
     meshMapRef.current.forEach((mesh, partId) => {
-      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-      mats.forEach((mat) => {
+      const origMats = originalMatsRef.current.get(partId);
+      if (!origMats) return;
+      // Swap back to the snapshotted original materials
+      mesh.material = origMats.length === 1 ? origMats[0] : origMats;
+      origMats.forEach((mat) => {
         const m = mat as any;
-        if (!(m.color instanceof THREE.Color)) return;
-        const orig = originalColorsRef.current.get(partId);
-        if (orig) m.color.copy(orig);
         if (m.emissive instanceof THREE.Color) {
           m.emissive.set(0x000000);
           m.emissiveIntensity = 0;
@@ -251,7 +259,7 @@ const ModelScene: React.FC<SceneProps> = ({
         m.needsUpdate = true;
       });
     });
-  }, [resetTrigger, meshMapRef, originalColorsRef]);
+  }, [resetTrigger, meshMapRef, originalMatsRef]);
 
   return (
     /*
@@ -316,7 +324,7 @@ export const ProductModelViewer: React.FC<ProductModelViewerProps> = ({ modelUrl
   const [resetTrigger, setResetTrigger] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const meshMapRef = useRef<Map<string, THREE.Mesh>>(new Map());
-  const originalColorsRef = useRef<Map<string, THREE.Color>>(new Map());
+  const originalMatsRef = useRef<Map<string, THREE.Material[]>>(new Map());
 
   // Reset everything when URL changes
   useEffect(() => {
@@ -327,7 +335,7 @@ export const ProductModelViewer: React.FC<ProductModelViewerProps> = ({ modelUrl
     setIsLoading(true);
     setResetTrigger(0);
     meshMapRef.current.clear();
-    originalColorsRef.current.clear();
+    originalMatsRef.current.clear();
   }, [modelUrl]);
 
   const handlePartsReady = useCallback((discovered: ModelPart[]) => {
@@ -459,7 +467,7 @@ export const ProductModelViewer: React.FC<ProductModelViewerProps> = ({ modelUrl
                   selectedPartId={selectedPartId}
                   partColors={partColors}
                   meshMapRef={meshMapRef}
-                  originalColorsRef={originalColorsRef}
+                  originalMatsRef={originalMatsRef}
                   resetTrigger={resetTrigger}
                 />
               </ModelErrorBoundary>
